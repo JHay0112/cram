@@ -43,8 +43,8 @@ fn parse_command(input: String) -> CommandResult {
             let new_wd: &str = args.next().unwrap();
             let path = Path::new(new_wd);
             return match env::set_current_dir(&path) {
-                Ok(()) => CommandResult::Msg(format!("New working directory is {}", path.to_str().unwrap())),
-                Err(_) => CommandResult::Err(format!("Directory \"{}\" does not exist!", env::current_dir().unwrap().to_string_lossy().to_string()))
+                Ok(()) => CommandResult::Msg(format!("New working directory is {}", env::current_dir().unwrap().to_string_lossy().to_string())),
+                Err(_) => CommandResult::Err(format!("Directory \"{}\" does not exist!", path.to_str().unwrap()))
             };
         },
         "exit" => CommandResult::Exit,
