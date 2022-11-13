@@ -9,16 +9,17 @@ use std::io::Write;
 use std::path::Path;
 use std::env;
 
-const INPUT_MARKER: &str = ">>> ";
-const ERROR_MARKER: &str = "ERROR: ";
-const VERSION: &str = env!("CARGO_PKG_VERSION");
-
 enum CommandResult {
     Ok,
     Msg(String),
     Err(String),
     Exit
 }
+
+static INPUT_MARKER: &str = ">>> ";
+static ERROR_MARKER: &str = "ERROR: ";
+static VERSION: &str = env!("CARGO_PKG_VERSION");
+static NAME: &str = "CRAM";
 
 /// Gets and waits for a user input
 fn wait_for_input() -> String {
@@ -37,7 +38,7 @@ fn parse_command(input: String) -> CommandResult {
     let mut args = parts;
 
     return match command {
-        "exit" => CommandResult::Exit,
+        "pwd" => CommandResult::Msg(env::current_dir().unwrap().to_string_lossy().to_string()),
         "swd" => {
             let new_wd: &str = args.next().unwrap();
             let path = Path::new(new_wd);
@@ -45,8 +46,19 @@ fn parse_command(input: String) -> CommandResult {
                 Ok(()) => CommandResult::Msg(format!("New working directory is {}", path.to_str().unwrap())),
                 Err(_) => CommandResult::Err(format!("Directory \"{}\" does not exist!", env::current_dir().unwrap().to_string_lossy().to_string()))
             };
-        }
-        "pwd" => CommandResult::Msg(env::current_dir().unwrap().to_string_lossy().to_string()),
+        },
+        "exit" => CommandResult::Exit,
+        "help" => {
+
+            println!("Universal Commands");
+            println!(" help                  Produces this help page");
+            println!(" pwd                   Prints the current working directory");
+            println!(" swd <wd>              Sets a new working directory");
+            println!(" exit                  Exits {}", NAME);
+            println!("Further commands are detailed when accessible");
+        
+            return CommandResult::Ok;
+        },
         _ => CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
     };
 }
@@ -55,9 +67,8 @@ fn main() {
 
     let mut input;
 
-    println!("CRAM v{}", VERSION);
+    println!("{} v{}", NAME, VERSION);
     println!("Working directory: {}", env::current_dir().unwrap().to_string_lossy());
-    println!();
 
     loop {
         input = wait_for_input();
