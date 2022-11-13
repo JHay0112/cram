@@ -6,15 +6,18 @@
 
 use std::io;
 use std::io::Write;
-
+use std::process;
+use std::path::Path;
 use std::env;
+use std::fs;
 
 const INPUT_MARKER: &str = ">>> ";
 const ERROR_MARKER: &str = "ERROR: ";
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 enum CommandResult {
-    Ok(String),
+    Ok,
+    Message(String),
     Err(String),
     Exit
 }
@@ -33,10 +36,25 @@ fn parse_command(input: String) -> CommandResult {
     
     let mut parts = input.trim().split_whitespace();
     let command = parts.next().unwrap();
-    let args = parts;
+    let mut args = parts;
 
     return match command {
         "exit" => CommandResult::Exit,
+        "cd" => {
+            let new_dir = args.next().unwrap();
+            let path = Path::new(new_dir);
+            return match env::set_current_dir(&path) {
+                Ok(()) => CommandResult::Ok,
+                Err(e) => CommandResult::Err(e.to_string())
+            };
+        },
+        "ls" => {
+            let paths = fs::read_dir("./").unwrap();
+            for path in paths {
+                println!("{}", path.unwrap().path().display())
+            }
+            return CommandResult::Ok;
+        }
         _ => CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
     };
 }
@@ -52,7 +70,8 @@ fn main() {
     loop {
         input = wait_for_input();
         match parse_command(input) {
-            CommandResult::Ok(s)  => println!("{}", s),
+            CommandResult::Ok => continue,
+            CommandResult::Message(s) => println!("{}", s),
             CommandResult::Err(s) => println!("{}{}", ERROR_MARKER, s),
             CommandResult::Exit => {
                 println!("exiting...");
