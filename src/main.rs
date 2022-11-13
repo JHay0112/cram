@@ -16,10 +16,10 @@ enum CommandResult {
     Exit
 }
 
-static INPUT_MARKER: &str = ">>> ";
-static ERROR_MARKER: &str = "ERROR: ";
-static VERSION: &str = env!("CARGO_PKG_VERSION");
-static NAME: &str = "CRAM";
+/// Gets a string representation of the current working directory
+fn get_wd() -> String {
+    return env::current_dir().unwrap().to_string_lossy().to_string();
+}
 
 /// Gets and waits for a user input
 fn wait_for_input() -> String {
@@ -37,17 +37,20 @@ fn parse_command(input: String) -> CommandResult {
     let command = parts.next().unwrap();
     let mut args = parts;
 
-    return match command {
-        "pwd" => CommandResult::Msg(env::current_dir().unwrap().to_string_lossy().to_string()),
+    match command {
+        "pwd" => return CommandResult::Msg(get_wd()),
         "swd" => {
-            let new_wd: &str = args.next().unwrap();
+            let new_wd: &str = match args.next() {
+                None => return CommandResult::Err("Directory is required!".to_string()),
+                Some(wd) => wd
+            };
             let path = Path::new(new_wd);
             return match env::set_current_dir(&path) {
-                Ok(()) => CommandResult::Msg(format!("New working directory is {}", env::current_dir().unwrap().to_string_lossy().to_string())),
+                Ok(()) => CommandResult::Msg(format!("New working directory is {}", get_wd())),
                 Err(_) => CommandResult::Err(format!("Directory \"{}\" does not exist!", path.to_str().unwrap()))
             };
         },
-        "exit" => CommandResult::Exit,
+        "exit" => return CommandResult::Exit,
         "help" => {
 
             println!("Universal Commands");
@@ -59,7 +62,7 @@ fn parse_command(input: String) -> CommandResult {
         
             return CommandResult::Ok;
         },
-        _ => CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
+        _ => return CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
     };
 }
 
@@ -68,7 +71,8 @@ fn main() {
     let mut input;
 
     println!("{} v{}", NAME, VERSION);
-    println!("Working directory: {}", env::current_dir().unwrap().to_string_lossy());
+    println!("Working directory: {}", get_wd());
+    println!("Type `help` for information on commands");
 
     loop {
         input = wait_for_input();
