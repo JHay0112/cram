@@ -32,14 +32,13 @@ fn wait_for_input() -> String {
 fn parse_command(input: String) -> CommandResult {
     
     let mut parts = input.trim().split_whitespace();
-    let command = parts.next().unwrap().to_string();
+    let command = parts.next().unwrap();
     let args = parts;
 
-    if command == "exit" {
-        return CommandResult::Exit;
-    }
-
-    return CommandResult::Err(format!("{}\"{}\" is not a recognised command!", ERROR_MARKER, command));
+    return match command {
+        "exit" => CommandResult::Exit,
+        _ => CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
+    };
 }
 
 fn main() {
@@ -53,7 +52,7 @@ fn main() {
     loop {
         input = wait_for_input();
         match parse_command(input) {
-            CommandResult::Ok(s) => println!("{}", s),
+            CommandResult::Ok(s)  => println!("{}", s),
             CommandResult::Err(s) => println!("{}{}", ERROR_MARKER, s),
             CommandResult::Exit => {
                 println!("exiting...");
