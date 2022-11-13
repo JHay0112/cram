@@ -6,7 +6,6 @@
 
 use std::io;
 use std::io::Write;
-use std::process;
 use std::path::Path;
 use std::env;
 use std::fs;
@@ -17,7 +16,7 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 enum CommandResult {
     Ok,
-    Message(String),
+    Msg(String),
     Err(String),
     Exit
 }
@@ -74,7 +73,7 @@ fn main() {
         input = wait_for_input();
         match parse_command(input) {
             CommandResult::Ok => continue,
-            CommandResult::Message(s) => println!("{}", s),
+            CommandResult::Msg(s) => println!("{}", s),
             CommandResult::Err(s) => println!("{}{}", ERROR_MARKER, s),
             CommandResult::Exit => {
                 println!("exiting...");
