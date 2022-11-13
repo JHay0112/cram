@@ -8,7 +8,6 @@ use std::io;
 use std::io::Write;
 use std::path::Path;
 use std::env;
-use std::fs;
 
 const INPUT_MARKER: &str = ">>> ";
 const ERROR_MARKER: &str = "ERROR: ";
