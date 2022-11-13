@@ -13,9 +13,9 @@ static VERSION: &str = env!("CARGO_PKG_VERSION");
 pub static NAME: &str = "CRAM";
 
 // I intend for these to be moved to a data management module later
-pub static ACCOUNT_PATH: &str = "accounts.csv";
-pub static TRANSACTIONS_PATH: &str = "transactions.csv";
-pub static ACCOUNT_HOLDERS_PATH: &str = "account_holders.csv";
+//pub static ACCOUNT_PATH: &str = "accounts.csv";
+//pub static TRANSACTIONS_PATH: &str = "transactions.csv";
+//pub static ACCOUNT_HOLDERS_PATH: &str = "account_holders.csv";
 
 /// Prints the application banner
 pub fn print_banner() {
