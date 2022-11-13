@@ -5,6 +5,8 @@ use std::env;
 use std::io;
 use std::io::Write;
 
+pub use crate::commands::wd::get_wd;
+
 pub static INPUT_MARKER: &str = ">>> ";
 pub static ERROR_MARKER: &str = "ERROR: ";
 pub static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -14,11 +16,6 @@ pub static NAME: &str = "CRAM";
 pub static ACCOUNT_PATH: &str = "accounts.csv";
 pub static TRANSACTIONS_PATH: &str = "transactions.csv";
 pub static ACCOUNT_HOLDERS_PATH: &str = "account_holders.csv";
-
-/// Gets a string representation of the current working directory
-pub fn get_wd() -> String {
-    return env::current_dir().unwrap().to_string_lossy().to_string();
-}
 
 /// Gets and waits for a user input
 pub fn wait_for_input() -> String {

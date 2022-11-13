@@ -1,9 +1,8 @@
 /// Defines commands and command management for CRAM
 
-use std::env;
-use std::path::Path;
+use crate::utils::NAME;
 
-use crate::utils::{NAME, get_wd};
+pub mod wd;
 
 /// Output of a command
 pub enum CommandResult {
@@ -13,38 +12,36 @@ pub enum CommandResult {
     Exit
 }
 
+/// Prints help for all the commands
+fn print_help() -> CommandResult {
+    println!("Universal Commands");
+    println!(" help                  Produces this help page");
+    println!(" pwd                   Prints the current working directory");
+    println!(" swd <wd>              Sets a new working directory");
+    println!(" exit                  Exits {}", NAME);
+    println!("Further commands are detailed when accessible");
+
+    return CommandResult::Ok;
+}
+
 /// Parses the passed input
 pub fn parse_command(input: String) -> CommandResult {
     
     let mut parts = input.trim().split_whitespace();
-    let command = parts.next().unwrap();
+    let command = match parts.next() {
+        None => return CommandResult::Ok,
+        Some(cmd) => cmd
+    };
     let mut args = parts;
 
-    match command {
-        "pwd" => return CommandResult::Msg(get_wd()),
-        "swd" => {
-            let new_wd: &str = match args.next() {
-                None => return CommandResult::Err("Directory is required!".to_string()),
-                Some(wd) => wd
-            };
-            let path = Path::new(new_wd);
-            return match env::set_current_dir(&path) {
-                Ok(()) => CommandResult::Msg(format!("New working directory is {}", get_wd())),
-                Err(_) => CommandResult::Err(format!("Directory \"{}\" does not exist!", path.to_str().unwrap()))
-            };
+    return match command {
+        "pwd" => wd::print_wd(),
+        "swd" => match args.next() {
+                None => CommandResult::Err(format!("Directory is required!")),
+                Some(wd) => wd::set_wd(wd)
         },
-        "exit" => return CommandResult::Exit,
-        "help" => {
-
-            println!("Universal Commands");
-            println!(" help                  Produces this help page");
-            println!(" pwd                   Prints the current working directory");
-            println!(" swd <wd>              Sets a new working directory");
-            println!(" exit                  Exits {}", NAME);
-            println!("Further commands are detailed when accessible");
-        
-            return CommandResult::Ok;
-        },
-        _ => return CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
+        "exit" => CommandResult::Exit,
+        "help" => print_help(),
+        _ => CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
     };
 }

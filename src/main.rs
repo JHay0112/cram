@@ -5,7 +5,7 @@
 /// It is intended for personal management of accounts and expenses.
 
 mod utils;
-use utils::{NAME, VERSION, ERROR_MARKER, get_wd, wait_for_input};
+use utils::{NAME, VERSION, ERROR_MARKER, wait_for_input, get_wd};
 
 mod commands;
 use commands::{parse_command, CommandResult};
