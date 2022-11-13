@@ -51,7 +51,10 @@ fn parse_command(input: String) -> CommandResult {
         "ls" => {
             let paths = fs::read_dir("./").unwrap();
             for path in paths {
-                println!("{}", path.unwrap().path().display())
+                match path {
+                    Ok(dir) => println!("{}", dir.path().display()),
+                    Err(e) => return CommandResult::Err(e.to_string())
+                }
             }
             return CommandResult::Ok;
         }
