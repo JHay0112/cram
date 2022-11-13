@@ -5,7 +5,7 @@
 /// It is intended for personal management of accounts and expenses.
 
 mod utils;
-use utils::{NAME, VERSION, ERROR_MARKER, wait_for_input, get_wd};
+use utils::{ERROR_MARKER, wait_for_input, print_banner};
 
 mod commands;
 use commands::{parse_command, CommandResult};
@@ -14,9 +14,7 @@ fn main() {
 
     let mut input;
 
-    println!("{} v{}", NAME, VERSION);
-    println!("Working directory: {}", get_wd());
-    println!("Type `help` for information on commands");
+    print_banner();
 
     loop {
         input = wait_for_input();

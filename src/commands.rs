@@ -1,6 +1,6 @@
 /// Defines commands and command management for CRAM
 
-use crate::utils::NAME;
+use crate::utils::{NAME, print_banner};
 
 pub mod wd;
 
@@ -18,6 +18,7 @@ fn print_help() -> CommandResult {
     println!(" help                  Produces this help page");
     println!(" pwd                   Prints the current working directory");
     println!(" swd <wd>              Sets a new working directory");
+    println!(" clear                 Resets the terminal and prints the application banner");
     println!(" exit                  Exits {}", NAME);
     println!("Further commands are detailed when accessible");
 
@@ -35,13 +36,14 @@ pub fn parse_command(input: String) -> CommandResult {
     let mut args = parts;
 
     return match command {
+        "help" => print_help(),
         "pwd" => wd::print_wd(),
         "swd" => match args.next() {
                 None => CommandResult::Err(format!("Directory is required!")),
                 Some(wd) => wd::set_wd(wd)
         },
+        "clear" => {print_banner(); CommandResult::Ok}
         "exit" => CommandResult::Exit,
-        "help" => print_help(),
         _ => CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
     };
 }

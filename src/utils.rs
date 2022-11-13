@@ -5,17 +5,25 @@ use std::env;
 use std::io;
 use std::io::Write;
 
-pub use crate::commands::wd::get_wd;
+use crate::commands::wd::get_wd;
 
-pub static INPUT_MARKER: &str = ">>> ";
+static INPUT_MARKER: &str = ">>> ";
 pub static ERROR_MARKER: &str = "ERROR: ";
-pub static VERSION: &str = env!("CARGO_PKG_VERSION");
+static VERSION: &str = env!("CARGO_PKG_VERSION");
 pub static NAME: &str = "CRAM";
 
 // I intend for these to be moved to a data management module later
 pub static ACCOUNT_PATH: &str = "accounts.csv";
 pub static TRANSACTIONS_PATH: &str = "transactions.csv";
 pub static ACCOUNT_HOLDERS_PATH: &str = "account_holders.csv";
+
+/// Prints the application banner
+pub fn print_banner() {
+    print!("{esc}[2J{esc}[1;1H", esc = 27 as char); // Clear terminal
+    println!("{} v{}", NAME, VERSION);
+    println!("Working directory: {}", get_wd());
+    println!("Type `help` for information on commands");
+}
 
 /// Gets and waits for a user input
 pub fn wait_for_input() -> String {
