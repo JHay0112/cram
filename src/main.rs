@@ -39,7 +39,7 @@ fn parse_command(input: String) -> CommandResult {
 
     return match command {
         "exit" => CommandResult::Exit,
-        "cd" => {
+        "cd" => { // TO BE REPLACED WITH A CHANGE WORKING DIRECTORY COMMAND
             let new_dir = args.next().unwrap();
             let path = Path::new(new_dir);
             return match env::set_current_dir(&path) {
@@ -47,16 +47,7 @@ fn parse_command(input: String) -> CommandResult {
                 Err(e) => CommandResult::Err(e.to_string())
             };
         },
-        "ls" => {
-            let paths = fs::read_dir("./").unwrap();
-            for path in paths {
-                match path {
-                    Ok(dir) => println!("{}", dir.path().display()),
-                    Err(e) => return CommandResult::Err(e.to_string())
-                }
-            }
-            return CommandResult::Ok;
-        }
+        "pwd" => CommandResult::Msg(env::current_dir().unwrap().to_string_lossy().to_string()),
         _ => CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
     };
 }
@@ -66,7 +57,7 @@ fn main() {
     let mut input;
 
     println!("CRAM v{}", VERSION);
-    println!("Account Management Tool");
+    println!("Working directory: {}", env::current_dir().unwrap().to_string_lossy());
     println!();
 
     loop {
