@@ -13,6 +13,12 @@ const INPUT_MARKER: &str = ">>> ";
 const ERROR_MARKER: &str = "ERROR: ";
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+enum CommandResult {
+    Ok(String),
+    Err(String),
+    Exit
+}
+
 /// Gets and waits for a user input
 fn wait_for_input() -> String {
     print!("{}", INPUT_MARKER);
@@ -23,32 +29,34 @@ fn wait_for_input() -> String {
 }
 
 /// Parses the passed input
-fn parse_command(input: String) -> Result<String, String> {
+fn parse_command(input: String) -> CommandResult {
     
     let mut parts = input.trim().split_whitespace();
     let command = parts.next().unwrap().to_string();
     let args = parts;
 
     if command == "exit" {
-        return Err("Exiting...".to_string());
+        return CommandResult::Exit;
     }
 
-    return Err(format!("{}\"{}\" is not a recognised command!", ERROR_MARKER, command));
+    return CommandResult::Err(format!("{}\"{}\" is not a recognised command!", ERROR_MARKER, command));
 }
 
 fn main() {
 
     let mut input;
 
-    println!("Welcome to CRAM v{}", VERSION);
-    println!("Please use the below prompt to manage your accounts");
+    println!("CRAM v{}", VERSION);
+    println!("Account Management Tool");
+    println!();
 
     loop {
         input = wait_for_input();
         match parse_command(input) {
-            Ok(s) => println!("{}", s),
-            Err(s) => {
-                println!("{}", s);
+            CommandResult::Ok(s) => println!("{}", s),
+            CommandResult::Err(s) => println!("{}{}", ERROR_MARKER, s),
+            CommandResult::Exit => {
+                println!("exiting...");
                 break;
             }
         };
