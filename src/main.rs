@@ -38,14 +38,14 @@ fn parse_command(input: String) -> CommandResult {
 
     return match command {
         "exit" => CommandResult::Exit,
-        "cd" => { // TO BE REPLACED WITH A CHANGE WORKING DIRECTORY COMMAND
-            let new_dir = args.next().unwrap();
-            let path = Path::new(new_dir);
+        "swd" => {
+            let new_wd: &str = args.next().unwrap();
+            let path = Path::new(new_wd);
             return match env::set_current_dir(&path) {
-                Ok(()) => CommandResult::Ok,
-                Err(e) => CommandResult::Err(e.to_string())
+                Ok(()) => CommandResult::Msg(format!("New working directory is {}", path.to_str().unwrap())),
+                Err(_) => CommandResult::Err(format!("Directory \"{}\" does not exist!", env::current_dir().unwrap().to_string_lossy().to_string()))
             };
-        },
+        }
         "pwd" => CommandResult::Msg(env::current_dir().unwrap().to_string_lossy().to_string()),
         _ => CommandResult::Err(format!("\"{}\" is not a recognised command!", command))
     };
