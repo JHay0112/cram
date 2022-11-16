@@ -9,3 +9,4 @@ license-file = "LICENSE"
 repository = "https://github.com/JHay0112/cram"
 
 [dependencies]
+csv = "1.1"

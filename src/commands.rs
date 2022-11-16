@@ -1,6 +1,6 @@
 /// Defines commands and command management for CRAM
 
-use crate::utils::{NAME, print_banner};
+use crate::utils::print_banner;
 
 pub mod wd;
 
@@ -19,7 +19,7 @@ fn print_help() -> CommandResult {
     println!(" pwd                   Prints the current working directory");
     println!(" swd <wd>              Sets a new working directory");
     println!(" clear                 Resets the terminal and prints the application banner");
-    println!(" exit                  Exits {}", NAME);
+    println!(" exit                  Exits the program and returns to the standard terminal");
     println!("Further commands are detailed when accessible");
 
     return CommandResult::Ok;

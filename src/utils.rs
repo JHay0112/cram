@@ -10,7 +10,7 @@ use crate::commands::wd::get_wd;
 static INPUT_MARKER: &str = ">>> ";
 pub static ERROR_MARKER: &str = "ERROR: ";
 static VERSION: &str = env!("CARGO_PKG_VERSION");
-pub static NAME: &str = "CRAM";
+static NAME: &str = "CRAM";
 
 // I intend for these to be moved to a data management module later
 //pub static ACCOUNT_PATH: &str = "accounts.csv";
